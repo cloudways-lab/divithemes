@@ -137,7 +137,6 @@ class DiviThemesCommand extends WP_CLI_Command {
 			$response = curl_exec($ch);
 			$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 			curl_close($ch);
-			print_r($response);
 			return [$response, $httpcode];
 		}
 

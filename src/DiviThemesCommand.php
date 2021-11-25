@@ -21,13 +21,13 @@ class DiviThemesCommand extends WP_CLI_Command {
 
 	}
 
-	private function postToDivi($args) {
+	public function postToDivi($args) {
 		$url = 'https://www.elegantthemes.com/api/hosting_partners/';
 		$array['action'] = 'check_subscription';
 		$array['username'] = $args['username'];
 		$array['api_key'] = $args['apiKey'];
 		$array['token'] = $this->_token;
-
+		
 		$this->sendRequest($url, 'POST', $array);
 	}
 
@@ -59,13 +59,12 @@ class DiviThemesCommand extends WP_CLI_Command {
 
 	/**
 	 *
-	 * divitheme install [--apiKey=<key>] [--username=<username>]
+	 * divi-theme install [--apiKey=<key>] [--username=<username>]
 	 *
 	 */
-
 	public function install($args, $assoc_args) {
-		$apiKey = $assoc_args['apiKey'];
-		$username = $assoc_args['username'];
+		$apiKey = isset($assoc_args['apiKey'])?$assoc_args['apiKey']:null;
+		$username = isset($assoc_args['username'])?$assoc_args['username']:null;
 		if ($apiKey && $username) {
 			$url = 'https://www.elegantthemes.com/api/hosting_partners/?action=check_subscription&username=' . $username . '&api_key=' . $apiKey;
 			list($response, $code) = $this->sendRequest($url, 'GET');
@@ -126,11 +125,10 @@ class DiviThemesCommand extends WP_CLI_Command {
 		} else {
 			$ch = curl_init();
 			$headers = array();
-
 			$post = $array;
 
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($post));
+			curl_setopt($ch, CURLOPT_POSTFIELDS,($post));
 
 			curl_setopt($ch, CURLOPT_URL, $url);
 			curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
@@ -139,6 +137,7 @@ class DiviThemesCommand extends WP_CLI_Command {
 			$response = curl_exec($ch);
 			$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 			curl_close($ch);
+			print_r($response);
 			return [$response, $httpcode];
 		}
 
